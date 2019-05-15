@@ -12,6 +12,9 @@ build:
 	php artisan migrate --env=local --no-interaction
 	php artisan up
 
+development:
+	npm run watch
+
 docker-logs:
 	rm -rf /code/storage/logs/laravel.log
 	tail --retry --follow=name /code/storage/logs/laravel.log
