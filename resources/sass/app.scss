@@ -6,3 +6,37 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+.columns-container {
+    flex-grow: 1;
+    position:relative;
+}
+.columns {
+    padding:20px;
+    display:block;
+    user-select: none;
+    position:absolute;
+    overflow-x:auto;
+    overflow-y:hidden;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    white-space:nowrap;
+    height: calc( 100vh - 55px );
+}
+.column {
+    display:inline-block;
+    margin: 0px 4px;
+    white-space:nowrap;
+    box-sizing:border-box;
+    width:275px;
+    vertical-align:top;
+    display:inline-block;
+    height:100%;
+}
+
+.cards {
+    max-height: calc( 100vh - 160px );
+    overflow-x: auto;
+}
