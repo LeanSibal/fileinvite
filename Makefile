@@ -1,7 +1,7 @@
 build:
-	chmod -R 755 storage
+	chmod -R 777 storage
 	if [ -d bootstrap/cache ] ; then \
-		chmod -R 755 bootstrap/cache ; \
+		chmod -R 777 bootstrap/cache ; \
 	fi
 	composer install
 	php artisan down
