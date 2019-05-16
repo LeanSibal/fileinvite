@@ -1,5 +1,19 @@
 import React, { Component } from 'react'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Card from './Card'
+
+const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+    return result;
+}
+const getItemStyle = (isDragging, draggableStyle) => ({
+    ...draggableStyle,
+})
+
+const getListStyle = isDraggingOver => ({
+})
 
 class Column extends Component {
 
@@ -7,13 +21,17 @@ class Column extends Component {
         super(props)
         this.state = {
             cards: [{
+                id: 1,
                 name: 'Create staging environment'
             },{
+                id: 2,
                 name: 'test'
             },{
+                id: 3,
                 name: 'test2'
             }]
         }
+        this.onDragEnd = this.onDragEnd.bind(this)
     }
 
     renderCards() {
@@ -24,16 +42,61 @@ class Column extends Component {
         )
     }
 
+    onDragEnd(result) {
+        if (!result.destination)
+            return
+        const cards = reorder(
+            this.state.cards,
+            result.source.index,
+            result.destination.index
+        )
+        this.setState({
+            cards,
+        })
+    }
+
     render() {
         const {
             title
         } = this.props
         return (
-            <div class="column">
-                <div class="card">
-                    <div class="card-header">{ title }</div>
-                    <div class="card-body cards">
-                        { this.renderCards() }
+            <div className="column">
+                <div className="card">
+                    <div className="card-header">{ title }</div>
+                    <div className="card-body cards">
+                        <DragDropContext onDragEnd={ this.onDragEnd }>
+                            <Droppable droppableId="droppable" direction="vertical">
+                                { ( provided, snapshot ) => (
+                                    <div
+                                        ref={ provided.innerRef }
+                                        style={ getListStyle( snapshot.isDraggingOver ) }
+                                        { ...provided.draggableProps }
+                                    >
+                                    { this.state.cards.map(( card, index ) => (
+                                        <Draggable 
+                                            key={ card.id }
+                                            draggableId={ card.id }
+                                            index={ index }
+                                        >
+                                            {( provided, snapshot ) => (
+                                                <div
+                                                    ref={ provided.innerRef }
+                                                    { ...provided.draggableProps }
+                                                    { ...provided.dragHandleProps }
+                                                    style={getItemStyle(
+                                                        snapshot.isDragging,
+                                                        provided.draggableProps.style
+                                                    )}
+                                                >
+                                                    <Card name={ card.name } />
+                                                </div>
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                    </div>
+                                ) }
+                            </Droppable>
+                        </DragDropContext>
                     </div>
                 </div>
             </div>
