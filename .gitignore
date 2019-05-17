@@ -25,4 +25,4 @@ data/
 public/js/app.js
 public/css/app.css
 yarn.lock
-package.lock
+package-lock.json

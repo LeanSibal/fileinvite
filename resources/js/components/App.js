@@ -7,15 +7,8 @@ class App extends Component {
         super(props)
         this.state = {
             columns: [{
-                    title: 'Backlog'
-                },{
+                    id: 2,
                     title: 'Todo'
-                },{
-                    title: 'In Progress'
-                },{
-                    title: 'For Testing'
-                },{
-                    title: 'Done'
             }]
         }
     }
@@ -23,6 +16,7 @@ class App extends Component {
     renderColumns() {
         return this.state.columns.map( column => 
             <Column 
+                id={ column.id }
                 title={ column.title }
             />
         )
@@ -30,9 +24,11 @@ class App extends Component {
 
     render() {
         return(
-            <div class="columns-container">
-                <div class="columns">
-                    { this.renderColumns() }
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        { this.renderColumns() }
+                    </div>
                 </div>
             </div>
         )

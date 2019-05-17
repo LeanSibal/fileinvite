@@ -7,6 +7,11 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+// Fontawesome
+main {
+    padding: 20px;
+}
+
 .columns-container {
     flex-grow: 1;
     position:relative;
@@ -30,7 +35,7 @@
     margin: 0px 4px;
     white-space:nowrap;
     box-sizing:border-box;
-    width:275px;
+    width:100%;
     vertical-align:top;
     display:inline-block;
     height:100%;
@@ -39,4 +44,8 @@
 .cards {
     max-height: calc( 100vh - 160px );
     overflow-x: auto;
+}
+.card {
+    height: 100%;
+    margin-bottom: 5px;
 }
