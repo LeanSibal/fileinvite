@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
+import axios from 'axios'
 import Card from './Card'
 
 const reorder = (list, startIndex, endIndex) => {
@@ -21,24 +24,64 @@ class Column extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            cards: [{
-                id: 1,
-                name: 'Create staging environment'
-            },{
-                id: 2,
-                name: 'test'
-            },{
-                id: 3,
-                name: 'test2'
-            }]
+            cards: [],
+            showNew: false,
+            newTaskField: ''
         }
+        axios.get('/tasks').then( res => {
+            this.setState({
+                cards : res.data
+            });
+        })
         this.onDragEnd = this.onDragEnd.bind(this)
+        this.handleShowNew = this.handleShowNew.bind( this )
+        this.handleHideNew = this.handleHideNew.bind( this )
+        this.handleNewTaskField = this.handleNewTaskField.bind( this )
+        this.handleSaveNewTask = this.handleSaveNewTask.bind( this )
+    }
+
+    handleNewTaskField( event ) {
+        this.setState({
+            newTaskField: event.target.value
+        })
+    }
+
+    handleShowNew() {
+        this.setState({
+            showNew: true
+        })
+    }
+
+    handleSaveNewTask() {
+        const taskName = this.state.newTaskField
+        axios.post('/tasks',{
+            name: taskName
+        }).then( res => {
+            console.log( res.data )
+            this.setState({
+                cards: [ res.data ].concat( this.state.cards )
+            })
+        })
+        console.log( taskName )
+        this.setState({
+            showNew: false,
+            newTaskField: ''
+        })
+
+    }
+
+    handleHideNew() {
+        this.setState({
+            showNew: false,
+            newTaskField: ''
+        })
     }
 
     renderCards() {
         return this.state.cards.map( card => 
             <Card
                 name={ card.name }
+                completed={ card.completed }
             />
         )
     }
@@ -71,7 +114,7 @@ class Column extends Component {
                                 { title }
                             </div>
                             <div className="col-4 text-right">
-                                <FontAwesomeIcon icon="plus" size="lg" />
+                                <FontAwesomeIcon onClick={ this.handleShowNew }icon="plus" size="lg" />
                             </div>
                         </div>
                     </div>
@@ -100,7 +143,11 @@ class Column extends Component {
                                                         provided.draggableProps.style
                                                     )}
                                                 >
-                                                    <Card name={ card.name } />
+                                                    <Card
+                                                        id={ card.id }
+                                                        name={ card.name }
+                                                        completed={ card.completed } 
+                                                    />
                                                 </div>
                                             )}
                                         </Draggable>
@@ -112,6 +159,27 @@ class Column extends Component {
                         </DragDropContext>
                     </div>
                 </div>
+                <Modal show={ this.state.showNew } onHide={ this.handleHideNew }>
+                    <Modal.Header closeButton>
+                        New Task
+                    </Modal.Header>
+                    <Modal.Body>
+                        <input 
+                            type="text"
+                            className="form-control"
+                            value={ this.state.newTaskField }
+                            onChange={ this.handleNewTaskField } 
+                        />
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="danger">
+                            Cancel
+                        </Button>
+                        <Button onClick={ this.handleSaveNewTask } variant="primary">
+                            Save
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         )
     }
