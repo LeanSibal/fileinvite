@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Card from './Card'
 
@@ -57,15 +58,26 @@ class Column extends Component {
 
     render() {
         const {
+            id,
             title
         } = this.props
         return (
             <div className="column">
                 <div className="card">
-                    <div className="card-header">{ title }</div>
+                        
+                    <div className="card-header">
+                        <div className="row">
+                            <div className="col-8">
+                                { title }
+                            </div>
+                            <div className="col-4 text-right">
+                                <FontAwesomeIcon icon="plus" size="lg" />
+                            </div>
+                        </div>
+                    </div>
                     <div className="card-body cards">
                         <DragDropContext onDragEnd={ this.onDragEnd }>
-                            <Droppable droppableId="droppable" direction="vertical">
+                            <Droppable droppableId={ id } direction="vertical">
                                 { ( provided, snapshot ) => (
                                     <div
                                         ref={ provided.innerRef }
@@ -93,6 +105,7 @@ class Column extends Component {
                                             )}
                                         </Draggable>
                                     ))}
+                                    { provided.placeholder }
                                     </div>
                                 ) }
                             </Droppable>
